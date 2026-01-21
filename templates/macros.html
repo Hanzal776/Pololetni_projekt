@@ -1,0 +1,18 @@
+{% macro form_group(label_text, input_id, input_type='text', required=true, placeholder='', rows=None, pattern=None, min=None) %}
+<div class="form-group">
+    <label for="{{ input_id }}">{{ label_text }}:</label>
+    {% if rows %}
+    <textarea id="{{ input_id }}" name="{{ input_id }}" rows="{{ rows }}" {% if required %}required{% endif %} placeholder="{{ placeholder }}" {% if pattern %}pattern="{{ pattern }}"{% endif %}></textarea>
+    {% else %}
+    <input type="{{ input_type }}" id="{{ input_id }}" name="{{ input_id }}" {% if required %}required{% endif %} placeholder="{{ placeholder }}" {% if pattern %}pattern="{{ pattern }}"{% endif %} {% if min %}min="{{ min }}"{% endif %}>
+    {% endif %}
+</div>
+{% endmacro %}
+
+{% macro button(text, type='button', class='') %}
+<button type="{{ type }}" {% if class %}class="{{ class }}"{% endif %}>{{ text }}</button>
+{% endmacro %}
+
+{% macro message_div(id, class='') %}
+<div id="{{ id }}" {% if class %}class="{{ class }}"{% endif %}></div>
+{% endmacro %}

@@ -4,210 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Herní Skóre</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        h1 {
-            text-align: center;
-            color: white;
-            margin-bottom: 30px;
-            font-size: 2.5em;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-
-        .card {
-            background: white;
-            border-radius: 10px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        .card h2 {
-            color: #667eea;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #667eea;
-            padding-bottom: 10px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            color: #333;
-            font-weight: 500;
-        }
-
-        input, textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1em;
-            transition: border-color 0.3s;
-        }
-
-        input:focus, textarea:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 5px rgba(102, 126, 234, 0.2);
-        }
-
-        button {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            font-weight: 500;
-            transition: background 0.3s;
-        }
-
-        button:hover {
-            background: #764ba2;
-        }
-
-        button.delete {
-            background: #e74c3c;
-            padding: 5px 10px;
-            font-size: 0.9em;
-        }
-
-        button.delete:hover {
-            background: #c0392b;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th {
-            background: #f5f5f5;
-            color: #333;
-            padding: 12px;
-            text-align: left;
-            font-weight: 600;
-            border-bottom: 2px solid #ddd;
-        }
-
-        td {
-            padding: 12px;
-            border-bottom: 1px solid #eee;
-        }
-
-        tr:hover {
-            background: #f9f9f9;
-        }
-
-        .leaderboard {
-            grid-column: 1 / -1;
-        }
-
-        .medal {
-            display: inline-block;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            text-align: center;
-            line-height: 30px;
-            font-weight: bold;
-            color: white;
-            margin-right: 10px;
-        }
-
-        .gold { background: #ffd700; color: #333; }
-        .silver { background: #c0c0c0; color: #333; }
-        .bronze { background: #cd7f32; }
-
-        .player-list {
-            list-style: none;
-        }
-
-        .player-item {
-            background: #f9f9f9;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .player-info {
-            flex-grow: 1;
-        }
-
-        .player-name {
-            font-weight: 600;
-            color: #333;
-        }
-
-        .actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .success {
-            color: #27ae60;
-            padding: 10px;
-            background: #d5f4e6;
-            border-radius: 5px;
-            margin-bottom: 15px;
-        }
-
-        .error {
-            color: #e74c3c;
-            padding: 10px;
-            background: #fadbd8;
-            border-radius: 5px;
-            margin-bottom: 15px;
-        }
-
-        @media (max-width: 768px) {
-            .content {
-                grid-template-columns: 1fr;
-            }
-
-            .leaderboard {
-                grid-column: 1;
-            }
-
-            h1 {
-                font-size: 1.8em;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
+{% import 'macros.html' as macros %}
     <div class="container">
         <h1>🎮 Počítání Herního Skóre</h1>
 
@@ -215,13 +15,10 @@
             <!-- Panel pro přidání hráče -->
             <div class="card">
                 <h2>Přidat Hráče</h2>
-                <div id="playerMessage"></div>
+                {{ macros.message_div('playerMessage') }}
                 <form id="addPlayerForm">
-                    <div class="form-group">
-                        <label for="playerName">Jméno hráče:</label>
-                        <input type="text" id="playerName" required>
-                    </div>
-                    <button type="submit">Přidat hráče</button>
+                    {{ macros.form_group('Jméno hráče', 'playerName', 'text', true, 'Zadejte jméno hráče', None, '[a-zA-Z0-9 \-_]+') }}
+                    {{ macros.button('Přidat hráče', 'submit') }}
                 </form>
 
                 <h3 style="margin-top: 25px; color: #333;">Hráči:</h3>
@@ -231,7 +28,7 @@
             <!-- Panel pro přidání skóre -->
             <div class="card">
                 <h2>Zaznamenat Skóre</h2>
-                <div id="scoreMessage"></div>
+                {{ macros.message_div('scoreMessage') }}
                 <form id="addScoreForm">
                     <div class="form-group">
                         <label for="playerSelect">Vyberte hráče:</label>
@@ -239,15 +36,9 @@
                             <option value="">-- Vyberte hráče --</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label for="scoreValue">Skóre:</label>
-                        <input type="number" id="scoreValue" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="scoreNotes">Poznámka (volitelné):</label>
-                        <textarea id="scoreNotes" rows="2"></textarea>
-                    </div>
-                    <button type="submit">Zaznamenat skóre</button>
+                    {{ macros.form_group('Skóre', 'scoreValue', 'number', true, 'Zadejte skóre', None, None, '0') }}
+                    {{ macros.form_group('Poznámka (volitelné)', 'scoreNotes', 'text', false, 'Volitelná poznámka', 2) }}
+                    {{ macros.button('Zaznamenat skóre', 'submit') }}
                 </form>
             </div>
 

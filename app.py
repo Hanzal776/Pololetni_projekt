@@ -1,8 +1,19 @@
 from flask import Flask, render_template, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 import os
+import re
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///game_score.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
+
+def safe_characters(text):
+    # Allow only letters, numbers, spaces, hyphens, underscores
+    return re.sub(r'[^a-zA-Z0-9 \-_]', '', text).strip()
+
+# Model pro hráče
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///game_score.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -63,10 +74,14 @@ def add_player():
     if not data or not data.get('name'):
         return jsonify({'error': 'Jméno je povinné'}), 400
     
-    if Player.query.filter_by(name=data['name']).first():
+    sanitized_name = safe_characters(data['name'])
+    if not sanitized_name:
+        return jsonify({'error': 'Jméno obsahuje neplatné znaky'}), 400
+    
+    if Player.query.filter_by(name=sanitized_name).first():
         return jsonify({'error': 'Hráč s tímto jménem již existuje'}), 400
     
-    player = Player(name=data['name'])
+    player = Player(name=sanitized_name)
     db.session.add(player)
     db.session.commit()
     return jsonify(player.to_dict()), 201
