@@ -41,7 +41,7 @@ class Score(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     player_id = db.Column(db.Integer, db.ForeignKey('player.id'), nullable=False)
     score = db.Column(db.Integer, nullable=False)
-    game_date = db.Column(db.DateTime, default=db.func.current_timestamp())
+    game_date = db.Column(db.DateTime, default=db.func.now())
     notes = db.Column(db.String(255))
 
     def to_dict(self):
